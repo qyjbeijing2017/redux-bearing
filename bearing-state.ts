@@ -55,11 +55,11 @@ export class BearingState<T> extends EventEmitter {
         }
     }
 
-    release = ()=>{
+    release = () => {
         this.releaseStore();
     }
-    
-    private releaseStore = ()=>{};
+
+    private releaseStore = () => { };
 
     set store(store: Store) {
         this._store = store;

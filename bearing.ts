@@ -15,7 +15,7 @@ export const combinedReducer2SamePoint = (reducers: (Reducer | undefined)[]) => 
         let stateNew = state;
         for (const reducer of reducers) {
             if (reducer)
-                stateNew = { ...stateNew, ...reducer(state, action) };
+                stateNew = { ...stateNew, ...reducer(stateNew, action) };
         }
         return stateNew;
     }
@@ -37,6 +37,10 @@ export default class Bearing<T extends BreaingStartOption> {
 
     get states(): BearingStates<T> {
         return this._states;
+    }
+
+    get storeStates(){
+        return this.store.getState();
     }
 
     release = () => { this.foreachStates(this._states, state => state.release()) }

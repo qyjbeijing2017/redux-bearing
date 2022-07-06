@@ -1,0 +1,28 @@
+
+stages:
+  - build
+  - publish
+  - release
+
+build-image:   # 进程名
+  stage: build          # 进程顺序 build、test、deploy
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^[\d]{1,5}\.[\d]{1,5}\.[\d]{1,5}$/  # 只有tag了版本号才能被推送
+  script:               # 要运行的代码
+    - echo "Hello, $GITLAB_USER_LOGIN!!"
+    - docker build -t redux-bearing:$CI_COMMIT_SHORT_SHA .    # 构建镜像
+ 
+push:
+  stage: publish
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^[\d]{1,5}\.[\d]{1,5}\.[\d]{1,5}$/
+  script:
+    # - docker run --rm redux-bearing:$CI_COMMIT_SHORT_SHA set registry=http://verdaccio.local/ //http://verdaccio.local//:_authToken=UXjD666h3GbFgpFwY1PLuw== && npm publish --access=public # 上传文件
+    - docker run --rm redux-bearing:$CI_COMMIT_SHORT_SHA
+
+clear:
+  stage:  release
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^[\d]{1,5}\.[\d]{1,5}\.[\d]{1,5}$/
+  script:
+    - docker rmi redux-bearing:$CI_COMMIT_SHORT_SHA # 释放已经没用的镜像

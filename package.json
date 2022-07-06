@@ -16,7 +16,8 @@
   },
   "scripts": {
     "build": "tsc",
-    "start": "ts-node index.ts"
+    "start": "ts-node test.ts",
+    "test": "ts-node test.ts"
   },
   "respository":{
     "type":"git",

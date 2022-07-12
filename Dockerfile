@@ -16,6 +16,6 @@ COPY --from=builder code/package.json .
 COPY --from=builder code/tsconfig.json .
 COPY --from=builder code/README.md .
 ADD .npmrc /root/
-ENTRYPOINT ["yarn", "publish", "--access=public"]
+ENTRYPOINT ["npm", "publish", "--access=public"]
 # ENTRYPOINT npm set registry=$REGISTRY //$REGISTRY/:_authToken=$TOKEN && npm publish --access=$ACCESS
 # ENTRYPOINT ["npm", "set", "registry=$REGISTRY", "//$REGISTRY/:_authToken=$TOKEN", "&&", "npm", "publish", "--access=$ACCESS"]

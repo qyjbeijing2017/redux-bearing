@@ -14,7 +14,7 @@ export default function useBearing<U, T extends BearingState<U>>(state: T): [U |
         }
     }, [state]);
     return [val, (value: U | null) => {
-        // state.val = value;
-        setVal(value);
+        state.val = value;
+        //  value;
     }];
 }

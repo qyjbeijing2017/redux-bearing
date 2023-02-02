@@ -3,7 +3,7 @@ import { BearingState } from "./bearing-state";
 import { composeWithDevTools } from 'redux-devtools-extension'
 
 interface BreaingStartOption {
-    [key: string]: BreaingStartOption | { new(pos?: string): BearingStates<any> };
+    [key: string]: BreaingStartOption | { new(pos: string): BearingStates<any> };
 }
 
 type BearingStates<T extends BreaingStartOption> = {

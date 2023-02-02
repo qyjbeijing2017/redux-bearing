@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { BearingState } from './bearing-state';
 
-export default function useBearing<U, T extends BearingState<U>>(state: T): [U | null, (value: U | null) => void] {
+export default function useBearing<U>(state: BearingState<U>): [U | null, (value: U | null) => void] {
     const [val, setVal] = useState<U | null>(state.val);
     useEffect(() => {
         const updateFun = (val: U) => setVal(val);

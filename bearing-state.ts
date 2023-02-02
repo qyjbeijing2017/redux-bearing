@@ -20,6 +20,14 @@ export class BearingState<T> extends EventEmitter {
 
     protected lastVal = this._defaultVal;
 
+    static fromDefaultVal = <T>(defaultVal: T) => {
+        return class extends BearingState<T> {
+            constructor(pos?: string) {
+                super(pos, defaultVal);
+            }
+        } as { new(pos?: string): BearingState<T> };
+    }
+
     constructor(pos?: string, defaultVal?: T) {
         super();
         if (pos) this._pos = pos;
@@ -28,6 +36,8 @@ export class BearingState<T> extends EventEmitter {
             this.lastVal = defaultVal;
         }
     }
+
+
 
     get pos() {
         return this._pos;
@@ -125,6 +135,4 @@ export class BearingState<T> extends EventEmitter {
     removeListener(eventName: string | symbol, listener: (...args: any[]) => void): this {
         return super.removeListener(eventName, listener);
     }
-
-
 }

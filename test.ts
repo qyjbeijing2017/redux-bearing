@@ -92,7 +92,8 @@ class TestBearingState extends BearingState<number> {
 const bearing = new Bearing({
     // 你可以直接传入一个基本的BearingState<T>的类型，这样Bearing将会自动生成一个对应T的状态。
     bearingVal1: BearingState<string>,
-    bearingVal2: BearingState<string>,
+    // 可以通过fromDefaultVal方法创建一个BearingState，这样Bearing将会自动生成一个对应T的状态，并且将默认值设置成你传递的值。
+    bearingVal2: BearingState.fromDefaultVal('123'),
     // Bearing同样支持树结构的状态，虽然不推荐这样做，但是为了兼容之前的Redux树，或者为了其他什么事情，我们还是提供了这样的方式。
     bearingVal3: {
         bearingVal31: BearingState<number>,
@@ -209,3 +210,8 @@ testVal.val = 3;
 
 // 注意，这里不会触发update事件，因为在自定义reducer中，我们没有去实际改变状态树的值，Bearing会使用===对比他们，以便于针对性的处理某个状态值。
 // 但是同样的===会对类似Object.assign({},state)的情况有效，因为它并会返回一个新的对象，这和React的state是一样的。
+
+
+// React
+// 通过useBearing可以获取到当前节点的状态值，以及更新当前节点的方法。
+// const [myState, setMyState] = useBearing(bearing.states.bearingVal3);

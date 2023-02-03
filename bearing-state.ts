@@ -70,10 +70,7 @@ export class BearingState<T> extends EventEmitter {
         this.releaseStore = this._store.subscribe(() => {
             if (this.val !== this.lastVal) {
                 this.lastVal = this.val;
-                if (this.val)
-                    this.emit('update', this.val);
-                else
-                    this.emit('delete');
+                this.emit('update', this.val);
             }
         });
     }

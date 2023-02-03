@@ -1,4 +1,4 @@
-import { combineReducers, createStore, Reducer, Store } from "redux";
+import { AnyAction, combineReducers, createStore, Reducer, Store, StoreEnhancer } from "redux";
 import { BearingState } from "./bearing-state";
 import { composeWithDevTools } from 'redux-devtools-extension'
 
@@ -21,13 +21,18 @@ export const combinedReducer2SamePoint = (reducers: (Reducer | undefined)[]) => 
     }
 }
 
+export interface BearingOptions {
+    reducer: Reducer;
+    enhancer: StoreEnhancer<Store<any, AnyAction>>
+}
+
 export default class Bearing<T extends BreaingStartOption> {
     private readonly _store: Store;
     private readonly _states: BearingStates<T>
-    constructor(startType: T, reducer?: Reducer) {
+    constructor(startType: T, options?: Partial<BearingOptions>) {
         this._states = this.createStates(startType);
-        const myReducer = this.reducer(this._states);
-        this._store = createStore(combinedReducer2SamePoint([myReducer as any, reducer]), composeWithDevTools());
+        const myReducer = this.createReducer(this._states);
+        this._store = createStore(combinedReducer2SamePoint([myReducer as any, options?.reducer]), options?.enhancer ?? composeWithDevTools());
         this.foreachStates(this._states, (state) => state.store = this._store);
     }
 
@@ -45,7 +50,7 @@ export default class Bearing<T extends BreaingStartOption> {
 
     release = () => { this.foreachStates(this._states, state => state.release()) }
 
-    reducer(states: BearingStates<any>) {
+    createReducer(states: BearingStates<any>) {
         const reducer: any = {};
         for (const key in states) {
             if (states.hasOwnProperty(key)) {
@@ -53,7 +58,7 @@ export default class Bearing<T extends BreaingStartOption> {
                 if (state instanceof BearingState) {
                     reducer[key] = state.reducer;
                 } else {
-                    reducer[key] = this.reducer(state);
+                    reducer[key] = this.createReducer(state);
                 }
             }
         }

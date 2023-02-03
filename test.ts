@@ -104,13 +104,15 @@ const bearing = new Bearing({
 
 },
     // 第二个参数可以填入之前工程设定的reducer，这将让Bearing和传统的Redux还有其他框架一起工作，当然如果你不想要这个功能，或者这是一个新的工程，这个参数可以不填。
-    combineReducers({
-        val1: reducer1,
-        val2: combineReducers({
-            val21: reducer2,
-            val22: reducer3
+    {
+        reducer: combineReducers({
+            val1: reducer1,
+            val2: combineReducers({
+                val21: reducer2,
+                val22: reducer3
+            })
         })
-    })
+    }
 );
 
 // 可以通过bearing.storeStates获取当前的状态树，除非用于输出，否则不推荐这么使用。因为这回绕开类型检查，它将返回一个any类型的对象。

@@ -1,20 +1,16 @@
 import { useEffect, useState } from 'react';
 import { BearingState } from './bearing-state';
 
-export default function useBearing<U>(state: BearingState<U>): [U | null, (value: U | null) => void] {
-    const [val, setVal] = useState<U | null>(state.val);
+export default function useBearing<U>(state: BearingState<U>): [U, (value: U) => void] {
+    const [val, setVal] = useState<U>(state.val);
     useEffect(() => {
         const updateFun = (val: U) => setVal(val);
-        const delFun = () => setVal(null);
         state.addListener("update", updateFun);
-        state.addListener("delete", delFun);
         return () => {
             state.removeListener("update", updateFun);
-            state.removeListener("delete", delFun);
         }
     }, [state]);
-    return [val, (value: U | null) => {
+    return [val, (value: U) => {
         state.val = value;
-        //  value;
     }];
 }

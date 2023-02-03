@@ -56,7 +56,7 @@ export const testAction = () => {
 
 class TestBearingState extends BearingState<number> {
     // pos是这个值的位置信息，由Bearing生成，必须将它传递给BearingState，否则BearingState将在state中丢失它的位置。
-    constructor(pos?: string) {
+    constructor(pos: string) {
         // 第二个参数是这个值的默认值。
         super(pos, -1);
     }
@@ -68,15 +68,9 @@ class TestBearingState extends BearingState<number> {
         // localStorage.setItem('testBearingState', JSON.stringify(payload));
     }
 
-    // 我们也可以在这个值删除时做些事情，如果没有重写reducer，Bearing将会自动调用它。
-    delete() {
-        // 比如将它从localStorage中删除
-        // localStorage.removeItem('testBearingState');
-    }
-
     // 在这里重写reducer函数，用于自定义reducer。
     // 这里我们将所有进来的值都设置成-1，这将改变之前设置的默认值，同时由于值相等，所以Bearing不会触发update事件。
-    reducer = (state: number | null = 1, action: any) => {
+    reducer = (state: number = 1, action: any) => {
         // 不要忘记呼叫update、delete函数，否则Bearing将无法自动调用它们。
         this.update(-1);
         // this.delete(state);
@@ -91,21 +85,21 @@ class TestBearingState extends BearingState<number> {
 
 const bearing = new Bearing({
     // 你可以直接传入一个基本的BearingState<T>的类型，这样Bearing将会自动生成一个对应T的状态。
-    bearingVal1: BearingState<string>,
+    bearingVal1: BearingState.fromDefaultVal(1),
     // 可以通过fromDefaultVal方法创建一个BearingState，这样Bearing将会自动生成一个对应T的状态，并且将默认值设置成你传递的值。
-    bearingVal2: BearingState.fromDefaultVal('123'),
+    bearingVal2: BearingState.fromDefaultVal('val2'),
     // Bearing同样支持树结构的状态，虽然不推荐这样做，但是为了兼容之前的Redux树，或者为了其他什么事情，我们还是提供了这样的方式。
     bearingVal3: {
-        bearingVal31: BearingState<number>,
-        bearingVal32: BearingState<string>,
+        bearingVal31: BearingState.fromDefaultVal(31),
+        bearingVal32: BearingState.fromDefaultVal('val32'),
         // 你也可以自定义一个BearingState的类型，创建方法就如同上面TestBearingState创建方法一样。
         testStateVal: TestBearingState,
     },
     // 当然Bearing是可以通过它的方式去操作传统Redux定义的状态的，这与react-redux也是同样兼容的。
-    val1: BearingState<string>,
+    val1: BearingState.fromDefaultVal('val1'),
     val2: {
-        val21: BearingState<string>,
-        val22: BearingState<string>,
+        val21: BearingState.fromDefaultVal('val21'),
+        val22: BearingState.fromDefaultVal('val22'),
     },
 
 },
@@ -215,3 +209,15 @@ testVal.val = 3;
 // React
 // 通过useBearing可以获取到当前节点的状态值，以及更新当前节点的方法。
 // const [myState, setMyState] = useBearing(bearing.states.bearingVal3);
+
+// test default value
+
+const bearingTestDefaultValue = new Bearing({
+    val1: BearingState.fromDefaultVal('hello'),
+});
+if (bearingTestDefaultValue.storeStates.val1 === 'hello') {
+    console.log('test default value success');
+} else {
+    console.error(`default value is ${bearingTestDefaultValue.storeStates.val1}`);
+    console.error('test default value fail');
+}

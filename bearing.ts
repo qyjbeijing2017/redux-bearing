@@ -7,7 +7,7 @@ interface BreaingStartOption {
 }
 
 type BearingStates<T extends BreaingStartOption> = {
-    [P in keyof T]: T[P] extends { new(pos?: string): any } ? InstanceType<T[P]> : T[P] extends BreaingStartOption ? BearingStates<T[P]> : null;
+    [P in keyof T]: T[P] extends { new(pos: string): any } ? InstanceType<T[P]> : T[P] extends BreaingStartOption ? BearingStates<T[P]> : T[P];
 }
 
 export const combinedReducer2SamePoint = (reducers: (Reducer | undefined)[]) => {

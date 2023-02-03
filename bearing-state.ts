@@ -9,45 +9,42 @@ export enum BearingOption {
 export interface BearingAction<T> extends AnyAction {
     pos: string,
     option?: number,
-    data?: T,
+    data: T,
 }
 
 export class BearingState<T> extends EventEmitter {
     private readonly _pos = this.constructor.name;
-    private readonly _defaultVal: T | null = null;
+    private readonly _defaultVal: T;
 
     private _store: Store | null = null;
 
-    protected lastVal = this._defaultVal;
+    protected lastVal: T;
 
     static fromDefaultVal = <T>(defaultVal: T) => {
         return class extends BearingState<T> {
-            constructor(pos?: string) {
+            constructor(pos: string) {
                 super(pos, defaultVal);
             }
         } as { new(pos?: string): BearingState<T> };
     }
 
-    constructor(pos?: string, defaultVal?: T) {
+    constructor(pos: string, defaultVal: T) {
         super();
         if (pos) this._pos = pos;
-        if (defaultVal) {
-            this._defaultVal = defaultVal;
-            this.lastVal = defaultVal;
-        }
+        this._defaultVal = defaultVal;
+        this.lastVal = defaultVal;
     }
-
-
 
     get pos() {
         return this._pos;
     }
 
-    get val(): T | null {
-        if (!this._store)
-            return null;
+    get val(): T {
         const positions = this.pos.split('.');
         positions.shift();
+        if (!this._store) {
+            throw new Error(`the store of ${this.pos} is not set, please init state with bearing first!`);
+        }
         let state = this._store.getState();
         for (let i = 0; i < positions.length; i++) {
             state = state[positions[i]];
@@ -55,14 +52,11 @@ export class BearingState<T> extends EventEmitter {
         return state;
     }
 
-    set val(val: T | null) {
-        if (this._store) {
-            if (val) {
-                this._store.dispatch(this.updateAction(val));
-            } else {
-                this._store.dispatch(this.delAction());
-            }
+    set val(val: T) {
+        if (!this._store) {
+            throw new Error(`the store of ${this.pos} is not set, please init state with bearing first!`);
         }
+        this._store.dispatch(this.updateAction(val));
     }
 
     release = () => {
@@ -85,15 +79,12 @@ export class BearingState<T> extends EventEmitter {
     }
 
 
-    reducer = (state: T | null = this._defaultVal, action: BearingAction<T>): T | null => {
+    reducer = (state: T = this._defaultVal, action: BearingAction<T>): T => {
         if (action.pos !== this._pos) return state;
         switch (action.option as BearingOption) {
             case BearingOption.UPDATE:
                 this.update(state, action.data);
-                return action.data || null;
-            case BearingOption.DELETE:
-                this.delete(state);
-                return null;
+                return action.data;
             default:
                 return state;
         }
@@ -108,21 +99,10 @@ export class BearingState<T> extends EventEmitter {
         }
     }
 
-    delAction(): BearingAction<T> {
-        return {
-            type: 'BearingAction',
-            pos: this._pos,
-            option: BearingOption.DELETE,
-        }
-    }
-
-    update(valLast: T | null, val?: T) {
+    update(valLast: T, val?: T) {
 
     }
 
-    delete(valLast: T | null) {
-
-    }
 
     addListener(eventName: 'update', listener: (val: T) => void): this;
     addListener(eventName: 'delete', listener: () => void): this;

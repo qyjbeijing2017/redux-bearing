@@ -1,6 +1,6 @@
 {
   "name": "redux-bearing",
-  "version": "2.3.1",
+  "version": "2.3.2",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
@@ -21,6 +21,12 @@
   },
   "respository":{
     "type":"git",
-    "url":"git+"
-  }
+    "url":"https://github.com/qyjbeijing2017/redux-bearing"
+  },
+  "author": "qyjbeijing2017",
+  "keywords": [
+    "redux",
+    "react",
+    "typescript"
+  ]
 }

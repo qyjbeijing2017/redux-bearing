@@ -1,0 +1,12 @@
+Dockerfile
+.dockerignore
+docker-compose.yml
+Jenkinsfile
+node_modules
+npm-debug.log
+README.md
+.git
+.vscode
+.circleci
+.gitlab-ci.yml
+license

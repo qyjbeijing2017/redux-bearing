@@ -20,6 +20,7 @@ describe('redux-bearing', () => {
         expect(listener.mock.calls[0][0]).toBe(3);
     });
 
+    // it worked in the browser, but not in the test
     it('renders correctly', () => {
         states.num.val = 0;
         const component = renderer.create(<BearingComponent /> as any);
